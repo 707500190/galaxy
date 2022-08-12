@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sun.content.mapper.CrawlerStrategyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sun.content.api.entity.CrawlerStrategy">
+        <id column="id" property="id"/>
+        <result column="channel" property="channel"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, account, channel, create_time, update_time
+    </sql>
+    <select id="listReportRed" resultType="com.sun.content.api.vo.CrawlerReportVO">
+       select c.nick_name as account, IFNULL(a.countMonth, 0) as countMonth, IFNULL(b.countYear, 0) as countYear, date_format(c.latestDate,'%Y-%m-%d %T') as latestDate, '1' channel
+        from
+            (select count(1) countMonth, nick_name FROM `red_content_zhiku`  where insert_date between #{dto.monthStart} and #{dto.monthEnd} group by nick_name) a
+            right join
+            -- 月
+            (select count(1) countYear, nick_name FROM `red_content_zhiku`  where insert_date between #{dto.yearStart} and #{dto.yearEnd} group by nick_name ) b
+            on a.nick_name = b.nick_name
+            right join
+            -- 文章最新时间
+            (select max(insert_date) latestDate ,nick_name FROM `red_content_zhiku` GROUP BY nick_name ) c
+            on b.nick_name = c.nick_name
+
+        <if test="dto.account != null and dto.account != '' ">
+            and a.nick_name like CONCAT('%', #{dto.account}, '%')
+        </if>
+    </select>
+
+
+    <select id="listReportWX" resultType="com.sun.content.api.vo.CrawlerReportVO">
+        select c.account as account, IFNULL(a.countMonth, 0) as countMonth, IFNULL(b.countYear, 0) as countYear, date_format(c.latestDate,'%Y-%m-%d %T') as latestDate, '2' channel
+        from
+            (select count(1) countMonth, account FROM `weixin_official_account`  where insert_date between #{dto.monthStart} and #{dto.monthEnd} group by account) a
+            right join
+            (select count(1) countYear, account FROM `weixin_official_account`  where insert_date between #{dto.yearStart} and #{dto.yearEnd}
+             group by account ) b
+             on a.account = b.account
+             right join
+            -- 文章最新时间
+            (select max(insert_date) latestDate ,account FROM `weixin_official_account` GROUP BY account ) c
+            on b.account = c.account
+        <if test="dto.account != null and dto.account != '' ">
+            and a.account like CONCAT('%', #{dto.account}, '%')
+        </if>
+    </select>
+
+        <select id="listReportTiktok" resultType="com.sun.content.api.vo.CrawlerReportVO">
+
+        select c.account as account, IFNULL(a.countMonth, 0) as countMonth, IFNULL(b.countYear, 0) as countYear, date_format(c.latestDate,'%Y-%m-%d %T') as latestDate, '3' channel
+        from
+        (select count(1) countMonth, account FROM `DY_zhiku`  where insert_date between #{dto.monthStart} and #{dto.monthEnd} group by account) a
+        right join
+        (select count(1) countYear, account FROM `DY_zhiku`  where insert_date between #{dto.yearStart} and #{dto.yearEnd}
+        group by account ) b
+        on a.account = b.account
+        right join
+        -- 文章最新时间
+        (select max(insert_date) latestDate ,account FROM `DY_zhiku` GROUP BY account ) c
+        on b.account = c.account
+        <if test="dto.account != null and dto.account != '' ">
+        and a.account like CONCAT('%', #{dto.account}, '%')
+        </if>
+    </select>
+
+</mapper>

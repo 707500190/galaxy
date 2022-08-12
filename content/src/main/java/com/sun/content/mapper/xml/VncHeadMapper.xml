@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sun.content.mapper.VncHeadMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sun.content.entity.VncHead">
+        <id column="id" property="id" />
+        <result column="hrbp_id" property="hrbpId" />
+        <result column="custome_id" property="customeId" />
+        <result column="project_id" property="projectId" />
+        <result column="vnc_date" property="vncDate" />
+        <result column="status" property="status" />
+        <result column="project_bo" property="projectBo" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, hrbp_id, custome_id, project_id, vnc_date, status, project_bo
+    </sql>
+
+</mapper>

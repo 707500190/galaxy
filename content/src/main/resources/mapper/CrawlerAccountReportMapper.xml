@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sun.content.mapper.CrawlerAccountReportMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sun.content.api.entity.CrawlerAccountReport">
+        <id column="id" property="id"/>
+        <result column="latest_date" property="latestDate"/>
+        <result column="count_month" property="countMonth"/>
+        <result column="count_year" property="countYear"/>
+        <result column="account" property="account"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, latest_date, count_month, count_year, account, create_time
+    </sql>
+
+    <insert id="saveReportBatch" parameterType="java.util.List">
+
+        <foreach collection="list" item="item" index="index">
+            insert crawler_account_report
+            (`channel`,`account`, `count_month`, `count_year`, `latest_date`, `update_time`, `create_time`)
+            values
+            (
+            #{item.channel,jdbcType=VARCHAR},
+            #{item.account,jdbcType=VARCHAR},
+            #{item.countMonth,jdbcType=INTEGER},
+            #{item.countYear,jdbcType=INTEGER},
+            #{item.latestDate,jdbcType=DATETIMEOFFSET},
+            now(),
+            now()
+            )
+            on duplicate key update
+            latest_date = #{item.latestDate,jdbcType=DATETIMEOFFSET},
+            count_month = #{item.countMonth,jdbcType=INTEGER},
+            count_year = #{item.countYear,jdbcType=INTEGER},
+            update_time = now(),
+            create_time = now();
+        </foreach>
+    </insert>
+
+    <select id="pageReport" resultType="com.sun.content.api.vo.CrawlerReportVO">
+        SELECT
+        acc.id accountId,
+        acc.strategy_id,
+        acc.account,
+        acc.`status`,
+        acc.channel,
+        acc.account_tag,
+        acc.create_time,
+        IFNULL( rep.count_month, 0 ) countMonth,
+        IFNULL( rep.count_year, 0 ) countYear,
+        rep.latest_date
+        FROM
+        crawler_account_report rep
+        RIGHT JOIN crawler_strategy_account acc ON acc.account = rep.account
+        AND acc.channel = rep.channel
+        WHERE 1=1
+        <if test="dto.channel != null and dto.channel != ''">
+          AND acc.channel = #{dto.channel}
+        </if>
+        <if test="dto.account != null and dto.account != ''">
+            AND acc.account like CONCAT('%', #{dto.account}, '%')
+        </if>
+        <if test="dto.status != null and dto.status != ''">
+            AND acc.status = #{dto.status}
+        </if>
+    </select>
+
+</mapper>

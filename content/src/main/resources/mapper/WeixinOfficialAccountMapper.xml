@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sun.content.mapper.WeixinOfficialAccountMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sun.content.api.entity.WeixinOfficialAccount">
+        <id column="id" property="id" />
+        <result column="account" property="account" />
+        <result column="title" property="title" />
+        <result column="official_account_biz" property="officialAccountBiz" />
+        <result column="publish_link" property="publishLink" />
+        <result column="article_content" property="articleContent" />
+        <result column="article_html" property="articleHtml" />
+        <result column="article_sn" property="articleSn" />
+        <result column="publish_time" property="publishTime" />
+        <result column="reade_number" property="readeNumber" />
+        <result column="looking_at_number" property="lookingAtNumber" />
+        <result column="article_like_number" property="articleLikeNumber" />
+        <result column="insert_date" property="insertDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, account, title, official_account_biz, publish_link, article_content, article_html, article_sn, publish_time, reade_number, looking_at_number, article_like_number, insert_date
+    </sql>
+
+</mapper>

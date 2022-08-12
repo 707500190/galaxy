@@ -1,0 +1,103 @@
+security:
+  oauth2:
+    client:
+      client-id: pig
+      client-secret: pig
+      scope: server
+
+# 数据源
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: HmW3xLxgcNB7u&Ri
+    url: jdbc:mysql://10.60.22.157:3306/d1m_smart_elastic?characterEncoding=utf8&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+  redis:
+    password: 5b&vyYC^CuFha23f
+    host: 10.60.22.157
+    enable: true
+  cloud:
+    sentinel:
+      eager: true
+      transport:
+        dashboard: pig-sentinel-dashboard:5003
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  #######################################################################################
+  # es 配置
+  elasticsearch:
+    rest:
+      # 集群节点地址
+      uris: 10.60.22.157
+      port: 9200
+      username: elastic
+      password: ISGwqpadEq6Cg8di3IxD
+index:
+  name: think_tank
+
+#mybatis-plus:
+#  mapper-locations: classpath:/mapper/*Mapper.xml
+#  global-config:
+#    banner: false
+#    db-config:
+#      id-type: auto
+#      table-underline: true
+#      logic-delete-value: 1
+#      logic-not-delete-value: 0
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+
+
+# xxl:
+#   job:
+#     admin:
+#       addresses: http://km-dev.d1m.cn/xxl-job-admin
+
+#logstash
+log:
+  level: DEBUG
+  host: 10.60.22.157
+  port: 4560
+
+#生产环境地址::http://pms2.d1m.cn/pms/employee/authentication(4月15日可用)
+pms-host:
+  https://pms2-uat.d1m.cn
+upload:
+  path:
+    /data/video/
+  # D:\developer\video
+rocketmq:
+  producer:
+    groupName: content
+    namesrvAddr: 10.60.22.157:9876
+    topics: contentTopic
+    enable: true
+    msgBatch: 2
+  consumer:
+    groupName: content
+    namesrvAddr: 10.60.22.157:9876
+    consumeThreadMin: 30
+    consumeThreadMax: 100
+    topics: contentTopic~*
+    consumeMessageBatchMaxSize: 1000
+    enable: true
+
+# swagger 配置
+#swagger:
+#  title: D1M Swagger API
+#  license: Powered By pig4cloud
+#  licenseUrl: https://pig4cloud.com
+#  terms-of-service-url: https://pig4cloud.com
+#  contact:
+#    email: wangiegie@gmail.com
+#    url: https://pig4cloud.com

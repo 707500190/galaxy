@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sun.content.mapper.RedContentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sun.content.api.entity.RedContent">
+        <id column="id" property="id" />
+        <result column="publish_link" property="publishLink" />
+        <result column="title" property="title" />
+        <result column="publish_time" property="publishTime" />
+        <result column="interface_link" property="interfaceLink" />
+        <result column="article_id" property="articleId" />
+        <result column="article_like_number" property="articleLikeNumber" />
+        <result column="article_collect_number" property="articleCollectNumber" />
+        <result column="article_comment_number" property="articleCommentNumber" />
+        <result column="article_forward_number" property="articleForwardNumber" />
+        <result column="article_content" property="articleContent" />
+        <result column="article_picture_link" property="articlePictureLink" />
+        <result column="collection_label" property="collectionLabel" />
+        <result column="is_include" property="isInclude" />
+        <result column="home_page_link" property="homePageLink" />
+        <result column="nick_name" property="nickName" />
+        <result column="account" property="account" />
+        <result column="fans_number" property="fansNumber" />
+        <result column="follow_number" property="followNumber" />
+        <result column="article_number" property="articleNumber" />
+        <result column="gender" property="gender" />
+        <result column="collection_number" property="collectionNumber" />
+        <result column="like_number" property="likeNumber" />
+        <result column="brief_introduction" property="briefIntroduction" />
+        <result column="head_portrait_link" property="headPortraitLink" />
+        <result column="level" property="level" />
+        <result column="level_picture_link" property="levelPictureLink" />
+        <result column="remark" property="remark" />
+        <result column="insert_date" property="insertDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, publish_link, title, publish_time, interface_link, article_id, article_like_number, article_collect_number, article_comment_number, article_forward_number, article_content, article_picture_link, collection_label, is_include, home_page_link, nick_name, account, fans_number, follow_number, article_number, gender, collection_number, like_number, brief_introduction, head_portrait_link, level, level_picture_link, remark, insert_date
+    </sql>
+    <select id="allPage" resultType="com.sun.content.api.vo.ReptilePageVO">
+        select 2 as channel,id,title,account as account,'' as collectionLabel,publish_time as publishTime, article_like_number as articleLikeNumber, date_format(insert_date,'%Y-%m-%d %T') as insertDate
+        from weixin_official_account
+        where 1 = 1
+        <if test="reptileContentQueryDTO.keyword!=null and reptileContentQueryDTO.keyword!=''">
+            AND ( title LIKE '%${reptileContentQueryDTO.keyword}%' or  account LIKE '%${reptileContentQueryDTO.keyword}%' or  article_content LIKE '%${reptileContentQueryDTO.keyword}%'  )
+        </if>
+        <if test="reptileContentQueryDTO.startDate!=null and reptileContentQueryDTO.startDate!=''">
+            and publish_time &gt;= #{reptileContentQueryDTO.startDate}
+        </if>
+        <if test="reptileContentQueryDTO.endDate!=null and reptileContentQueryDTO.endDate!=''">
+            and publish_time &lt;= #{reptileContentQueryDTO.endDate}
+        </if>
+        union all
+        select 1 as channel,id,title,account,collection_label as collectionLabel,publish_time as publishTime, article_like_number as articleLikeNumber ,insert_date as insertDate
+        from red_content
+        where 1 = 1
+        <if test="reptileContentQueryDTO.keyword!=null and reptileContentQueryDTO.keyword!=''">
+            AND ( title LIKE '%${reptileContentQueryDTO.keyword}%' or  account LIKE '%${reptileContentQueryDTO.keyword}%' or  article_content LIKE '%${reptileContentQueryDTO.keyword}%'  or  collection_label LIKE '%${reptileContentQueryDTO.keyword}%'  )
+        </if>
+        <if test="reptileContentQueryDTO.startDate!=null and reptileContentQueryDTO.startDate!=''">
+            and publish_time &gt;= #{reptileContentQueryDTO.startDate}
+        </if>
+        <if test="reptileContentQueryDTO.endDate!=null and reptileContentQueryDTO.endDate!=''">
+            and publish_time &lt;= #{reptileContentQueryDTO.endDate}
+        </if>
+        <if test="reptileContentQueryDTO.fansNumber!=null and reptileContentQueryDTO.fansNumber!=''">
+            and fans_number &gt;= #{reptileContentQueryDTO.endDate.fansNumber}
+        </if>
+    </select>
+
+
+    <select id="page1" resultType="com.sun.content.api.vo.ReptilePageVO">
+        select 1 as channel,id,title,account,collection_label as collectionLabel,publish_time as publishTime, article_like_number as articleLikeNumber ,insert_date as insertDate
+        from red_content
+        where 1 = 1
+        <if test="reptileContentQueryDTO.keyword!=null and reptileContentQueryDTO.keyword!=''">
+            AND ( title LIKE '%${reptileContentQueryDTO.keyword}%' or  account LIKE '%${reptileContentQueryDTO.keyword}%' or  article_content LIKE '%${reptileContentQueryDTO.keyword}%'  or  collection_label LIKE '%${reptileContentQueryDTO.keyword}%'  )
+        </if>
+        <if test="reptileContentQueryDTO.startDate!=null and reptileContentQueryDTO.startDate!=''">
+            and publish_time &gt;= #{reptileContentQueryDTO.startDate}
+        </if>
+        <if test="reptileContentQueryDTO.endDate!=null and reptileContentQueryDTO.endDate!=''">
+            and publish_time &lt;= #{reptileContentQueryDTO.endDate}
+        </if>
+        <if test="reptileContentQueryDTO.fansNumber!=null and reptileContentQueryDTO.fansNumber!=''">
+            and fans_number &gt;= #{reptileContentQueryDTO.endDate.fansNumber}
+        </if>
+    </select>
+
+
+    <select id="selectFromScrap" resultType="java.util.List">
+        select *
+        from red_content_zhiku
+        where 1 = 1
+    </select>
+    <select id="page2" resultType="com.sun.content.api.vo.ReptilePageVO">
+        select 2 as channel,id,title,account as account,'' as collectionLabel,publish_time as publishTime, article_like_number as articleLikeNumber, date_format(insert_date,'%Y-%m-%d %T') as insertDate
+        from weixin_official_account
+        where 1 = 1
+        <if test="reptileContentQueryDTO.keyword!=null and reptileContentQueryDTO.keyword!=''">
+            AND ( title LIKE '%${reptileContentQueryDTO.keyword}%' or  account LIKE '%${reptileContentQueryDTO.keyword}%' or  article_content LIKE '%${reptileContentQueryDTO.keyword}%'  )
+        </if>
+        <if test="reptileContentQueryDTO.startDate!=null and reptileContentQueryDTO.startDate!=''">
+            and publish_time &gt;= #{reptileContentQueryDTO.startDate}
+        </if>
+        <if test="reptileContentQueryDTO.endDate!=null and reptileContentQueryDTO.endDate!=''">
+            and publish_time &lt;= #{reptileContentQueryDTO.endDate}
+        </if>
+    </select>
+</mapper>

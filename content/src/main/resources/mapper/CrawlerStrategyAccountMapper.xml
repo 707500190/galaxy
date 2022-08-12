@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sun.content.mapper.CrawlerStrategyAccountMapper">
+
+    <insert id="saveAccountBatch" parameterType = "com.sun.content.api.dto.CrawlerAccountDTO">
+        insert crawler_strategy_account (`channel`, `account`, `account_tag`, `update_time`, `create_time`, `strategy_id`) values
+        <foreach collection="dto.accountList" item="item" index="index" separator="," >
+            (
+            #{dto.channel, jdbcType=VARCHAR},
+            #{item, jdbcType=VARCHAR},
+            #{dto.stringTag, jdbcType=VARCHAR},
+            now(),
+            now(),
+            #{dto.id}
+            )
+        </foreach>
+        on duplicate key update
+        update_time = now(),
+        account_tag = #{dto.stringTag}
+
+    </insert>
+</mapper>
